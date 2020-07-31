@@ -1,0 +1,21 @@
+version: "2.4"
+x-logging:
+  &default-logging
+  driver: "json-file"
+  options:
+    max-size: "200k"
+    max-file: "10"
+
+services:
+  ss-s:
+    container_name: ss-s
+    image: shadowsocks/shadowsocks-libev:latest
+    volumes:
+      - ./server.json:/etc/shadowsocks/server.json
+      - ./ss.acl:/etc/shadowsocks/ss.acl
+    command: "ss-server -c /etc/shadowsocks/server.json --acl /etc/shadowsocks/ss.acl"
+    restart: unless-stopped
+    network_mode: "bridge"
+    ports:
+      - "2000:2000/tcp"
+    logging: *default-logging

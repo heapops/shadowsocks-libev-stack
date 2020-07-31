@@ -1,0 +1,20 @@
+version: "2.4"
+x-logging:
+  &default-logging
+  driver: "json-file"
+  options:
+    max-size: "200k"
+    max-file: "10"
+
+services:
+  ss-c:
+    container_name: ss-c
+    image: shadowsocks/shadowsocks-libev:latest
+    volumes:
+      - ./client.json:/etc/shadowsocks/client.json
+    command: "ss-local -c /etc/shadowsocks/client.json"
+    restart: unless-stopped
+    network_mode: "bridge"
+    ports:
+      - "1080:1080/tcp"
+    logging: *default-logging
